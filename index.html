@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+
+  <title>نظام الحضور والانصراف | المركز الصحي</title>
+
+  <meta
+    name="description"
+    content="بوابة إلكترونية لتنظيم حضور وانصراف موظفي المركز الصحي."
+  >
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="الصفحة الرئيسية">
+      <span class="brand-icon" aria-hidden="true">✚</span>
+      <span class="brand-text">
+        <strong>نظام الحضور والانصراف</strong>
+        <small>بوابة موظفي المركز الصحي</small>
+      </span>
+    </a>
+
+    <span class="system-status">
+      <span class="status-dot"></span>
+      بوابة الموظفين
+    </span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">النظام الإلكتروني للدوام</span>
+
+        <h1>
+          حضورك منظّم،
+          <span>ووقتك محسوب.</span>
+        </h1>
+
+        <p>
+          بوابة إلكترونية لتنظيم الحضور والانصراف، وتسهيل متابعة
+          دوام الموظفين وإدارة سجلاتهم اليومية.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="employee.html">
+            تسجيل حضور الموظف
+            <span aria-hidden="true">←</span>
+          </a>
+
+          <a class="btn btn-secondary" href="admin.html">
+            لوحة الإدارة
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-circle">
+          <div class="visual-card">
+            <div class="visual-icon">✓</div>
+            <strong>الحضور اليومي</strong>
+            <span>تنظيم ومتابعة الدوام</span>
+            <div class="visual-line"></div>
+            <div class="visual-line short"></div>
+            <div class="visual-footer">
+              <span class="visual-check">✓</span>
+              <span>واجهة تسجيل الحضور</span>
+            </div>
+          </div>
+          <span class="floating-shape shape-one">✦</span>
+          <span class="floating-shape shape-two">+</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="portal-section">
+      <div class="section-heading">
+        <span class="eyebrow">الخدمات الإلكترونية</span>
+        <h2>اختر بوابتك</h2>
+        <p>ادخل إلى القسم المناسب حسب صلاحياتك.</p>
+      </div>
+
+      <div class="portal-grid">
+        <article class="portal-card employee-card">
+          <div class="portal-icon">👤</div>
+          <h3>بوابة الموظف</h3>
+          <p>
+            الوصول إلى واجهة الموظف تمهيدًا لتسجيل الحضور
+            والانصراف والتحقق من الهوية.
+          </p>
+          <a class="card-link" href="employee.html">
+            الدخول إلى بوابة الموظف
+            <span aria-hidden="true">←</span>
+          </a>
+        </article>
+
+        <article class="portal-card admin-card">
+          <div class="portal-icon">📋</div>
+          <h3>لوحة الإدارة</h3>
+          <p>
+            واجهة مخصصة لإدارة الموظفين ومراجعة سجلات الدوام
+            والتقارير بعد ربط النظام بقاعدة البيانات.
+          </p>
+          <a class="card-link" href="admin.html">
+            الدخول إلى لوحة الإدارة
+            <span aria-hidden="true">←</span>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section class="info-strip">
+      <div class="info-item">
+        <span class="info-symbol">📱</span>
+        <div>
+          <strong>متوافق مع الهواتف</strong>
+          <p>مصمم للعمل على الآيفون والكمبيوتر.</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="info-symbol">🔒</span>
+        <div>
+          <strong>خصوصية البيانات</strong>
+          <p>يتطلب النظام النهائي قاعدة بيانات وصلاحيات آمنة.</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <span class="info-symbol">🕒</span>
+        <div>
+          <strong>متابعة الدوام</strong>
+          <p>الهدف هو تنظيم سجلات الحضور والانصراف.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="notice">
+      <span class="notice-icon" aria-hidden="true">ℹ</span>
+      <p>
+        <strong>ملاحظة:</strong>
+        الموقع في مرحلة الإعداد. لا تستخدمه حاليًا لتسجيل بيانات
+        موظفين حقيقية؛ إذ لم يتم بعد تفعيل تسجيل الحضور والتحقق
+        من الوجه والتخزين الآمن.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>نظام الحضور والانصراف © <span id="current-year">2026</span></p>
+    <p>بوابة إلكترونية لخدمة موظفي المركز الصحي</p>
+  </footer>
+
+  <script>
+    document.getElementById("current-year").textContent =
+      new Date().getFullYear();
+  </script>
+</body>
+</html>
