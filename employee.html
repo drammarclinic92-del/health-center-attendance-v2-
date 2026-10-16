@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+
+  <title>بوابة الموظف | نظام الحضور والانصراف</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    .employee-page {
+      width: min(720px, calc(100% - 32px));
+      margin: 35px auto 60px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .employee-panel {
+      padding: 30px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .employee-heading {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .employee-heading .portal-icon {
+      margin: 0 auto 14px;
+    }
+
+    .employee-heading h1 {
+      margin: 0;
+      font-size: 27px;
+    }
+
+    .employee-heading p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .employee-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .employee-form label {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .employee-form input {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .employee-form input:focus {
+      border-color: var(--primary);
+    }
+
+    .employee-form button {
+      margin-top: 15px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .employee-notice {
+      margin-top: 20px;
+      padding: 13px 15px;
+      border: 1px solid #f3dfad;
+      border-radius: 12px;
+      background: #fffbeb;
+      color: #854d0e;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .employee-message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .employee-message.visible {
+      display: block;
+    }
+
+    .employee-message.error {
+      color: #991b1b;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    @media (max-width: 520px) {
+      .employee-page {
+        margin-top: 20px;
+      }
+
+      .employee-panel {
+        padding: 22px 18px;
+      }
+
+      .employee-heading h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-icon" aria-hidden="true">✚</span>
+      <span class="brand-text">
+        <strong>نظام الحضور والانصراف</strong>
+        <small>بوابة موظفي المركز الصحي</small>
+      </span>
+    </a>
+
+    <span class="system-status">
+      <span class="status-dot"></span>
+      بوابة الموظف
+    </span>
+  </header>
+
+  <main class="employee-page">
+    <a class="back-link" href="index.html">
+      <span aria-hidden="true">→</span>
+      العودة إلى الصفحة الرئيسية
+    </a>
+
+    <section class="employee-panel">
+      <div class="employee-heading">
+        <div class="portal-icon" aria-hidden="true">👤</div>
+
+        <h1>بوابة الموظف</h1>
+
+        <p>
+          أدخل رقمك الوظيفي للانتقال إلى الخطوة التالية
+          بعد تفعيل نظام التحقق.
+        </p>
+      </div>
+
+      <form class="employee-form" id="employee-form">
+        <label for="employee-id">الرقم الوظيفي</label>
+
+        <input
+          id="employee-id"
+          name="employee-id"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="أدخل الرقم الوظيفي"
+          maxlength="30"
+          required
+        >
+
+        <button class="btn btn-primary" type="submit">
+          متابعة
+          <span aria-hidden="true">←</span>
+        </button>
+      </form>
+
+      <div
+        id="employee-message"
+        class="employee-message"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div class="employee-notice">
+        <strong>تنبيه:</strong>
+        هذه واجهة أولية فقط. لم يتم ربط أرقام الموظفين بقاعدة
+        بيانات أو تفعيل التحقق من الهوية؛ لذلك لن يتم تسجيل
+        الحضور أو حفظ أي بيانات.
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>نظام الحضور والانصراف © <span id="current-year">2026</span></p>
+    <p>بوابة إلكترونية لخدمة موظفي المركز الصحي</p>
+  </footer>
+
+  <script>
+    document.getElementById("current-year").textContent =
+      new Date().getFullYear();
+
+    const form = document.getElementById("employee-form");
+    const employeeId = document.getElementById("employee-id");
+    const message = document.getElementById("employee-message");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const value = employeeId.value.trim();
+
+      message.className = "employee-message visible error";
+
+      if (!value) {
+        message.textContent = "يرجى إدخال الرقم الوظيفي.";
+        return;
+      }
+
+      message.textContent =
+        "لم يتم تفعيل التحقق من الموظفين بعد. لن يُسجّل الحضور في هذه المرحلة.";
+    });
+  </script>
+</body>
+</html>
