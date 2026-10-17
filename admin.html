@@ -4,30 +4,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>إدارة الحضور - المركز الصحي</title>
+  <meta name="theme-color" content="#16734f">
+  <title>إدارة الحضور | المركز الصحي</title>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
+      min-height: 100vh;
+      padding: 20px;
+      display: grid;
+      place-items: center;
       font-family: Arial, sans-serif;
       background: #f1f7f4;
       color: #183c30;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
     }
+
     .card {
       width: 100%;
-      max-width: 430px;
+      max-width: 440px;
+      padding: 26px;
       background: white;
       border-radius: 18px;
-      padding: 26px;
       box-shadow: 0 8px 28px #173d3012;
     }
-    h1 { font-size: 24px; margin-top: 0; }
-    p { line-height: 1.8; color: #64756d; }
-    label { display: block; margin: 16px 0 7px; }
+
+    h1 { font-size: 25px; margin-top: 0; }
+    h2 { font-size: 20px; }
+
+    p { line-height: 1.8; color: #61746a; }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: bold;
+    }
+
     input {
       display: block;
       width: 100%;
@@ -35,52 +48,160 @@
       border: 1px solid #cedbd4;
       border-radius: 9px;
       font-size: 16px;
+      background: white;
     }
+
+    input:focus {
+      outline: 2px solid #7bc8a4;
+      border-color: #16734f;
+    }
+
     button {
       width: 100%;
       padding: 13px;
+      margin-top: 15px;
       border: 0;
       border-radius: 9px;
       background: #16734f;
       color: white;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 18px;
     }
-    button:disabled { opacity: .6; }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    .link-button {
+      background: transparent;
+      color: #16734f;
+      text-decoration: underline;
+      padding: 8px;
+    }
+
+    .hidden { display: none !important; }
+
     #message {
       overflow-wrap: anywhere;
+      white-space: pre-wrap;
       font-size: 14px;
+      margin-top: 18px;
     }
-    .hidden { display: none; }
+
+    .notice {
+      background: #f1f7f4;
+      padding: 12px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
   </style>
 </head>
+
 <body>
   <main class="card">
     <h1>إدارة حضور الموظفين</h1>
-    <p>المركز الصحي — تسجيل دخول المدير</p>
+    <p>المركز الصحي — بوابة المدير</p>
 
-    <form id="loginForm">
-      <label for="email">البريد الإلكتروني</label>
-      <input id="email" type="email"
-        autocomplete="username" required>
+    <!-- تسجيل الدخول -->
+    <section id="loginSection">
+      <form id="loginForm">
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" type="email"
+          autocomplete="username" required>
 
-      <label for="password">كلمة المرور</label>
-      <input id="password" type="password"
-        autocomplete="current-password" required>
+        <label for="password">كلمة المرور</label>
+        <input id="password" type="password"
+          autocomplete="current-password" required>
 
-      <button id="loginButton" type="submit">
-        تسجيل الدخول
+        <button id="loginButton" type="submit">
+          تسجيل الدخول
+        </button>
+      </form>
+
+      <button id="forgotButton" class="link-button" type="button">
+        نسيت كلمة المرور؟
       </button>
-    </form>
+    </section>
 
-    <section id="dashboard" class="hidden">
-      <h2>تم التحقق من حساب المدير</h2>
-      <p id="adminEmail"></p>
-      <p>تم التحقق من صلاحية الحساب. سيجري ربط
-      سجلات الحضور في الخطوة التالية.</p>
+    <!-- إرسال رابط الاستعادة -->
+    <section id="forgotSection" class="hidden">
+      <h2>استعادة كلمة المرور</h2>
+      <p>أدخل بريد حساب المدير، وسنرسل رابط الاستعادة إليه.</p>
+
+      <form id="forgotForm">
+        <label for="recoveryEmail">البريد الإلكتروني</label>
+        <input id="recoveryEmail" type="email"
+          autocomplete="email" required>
+
+        <button id="sendRecoveryButton" type="submit">
+          إرسال رابط الاستعادة
+        </button>
+      </form>
+
+      <button class="link-button backButton" type="button">
+        العودة لتسجيل الدخول
+      </button>
+    </section>
+
+    <!-- تعيين كلمة مرور جديدة بعد فتح رابط الاستعادة -->
+    <section id="resetSection" class="hidden">
+      <h2>تعيين كلمة مرور جديدة</h2>
+      <p>أدخل كلمة المرور الجديدة وأعد كتابتها للتأكيد.</p>
+
+      <form id="resetForm">
+        <label for="newPassword">كلمة المرور الجديدة</label>
+        <input id="newPassword" type="password"
+          minlength="8" autocomplete="new-password" required>
+
+        <label for="confirmPassword">تأكيد كلمة المرور</label>
+        <input id="confirmPassword" type="password"
+          minlength="8" autocomplete="new-password" required>
+
+        <button id="savePasswordButton" type="submit">
+          حفظ كلمة المرور
+        </button>
+      </form>
+    </section>
+
+    <!-- واجهة المدير -->
+    <section id="dashboardSection" class="hidden">
+      <h2>تم تسجيل الدخول</h2>
+      <p id="signedInEmail"></p>
+      <p class="notice">
+        تم التحقق من صلاحية حساب المدير. ربط سجلات الحضور
+        وقائمة الموظفين سيُستكمل في مرحلة لاحقة.
+      </p>
+
+      <button id="changePasswordButton" type="button">
+        تغيير كلمة المرور
+      </button>
+
       <button id="logoutButton" type="button">
         تسجيل الخروج
+      </button>
+    </section>
+
+    <!-- تغيير كلمة المرور من داخل الجلسة -->
+    <section id="changeSection" class="hidden">
+      <h2>تغيير كلمة المرور</h2>
+      <form id="changeForm">
+        <label for="currentPassword">كلمة المرور الحالية</label>
+        <input id="currentPassword" type="password"
+          autocomplete="current-password" required>
+
+        <label for="changedPassword">كلمة المرور الجديدة</label>
+        <input id="changedPassword" type="password"
+          minlength="8" autocomplete="new-password" required>
+
+        <label for="changedPasswordConfirm">تأكيد كلمة المرور الجديدة</label>
+        <input id="changedPasswordConfirm" type="password"
+          minlength="8" autocomplete="new-password" required>
+
+        <button id="changeSubmitButton" type="submit">
+          تحديث كلمة المرور
+        </button>
+      </form>
+
+      <button class="link-button backButton" type="button">
+        العودة
       </button>
     </section>
 
@@ -88,6 +209,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
     const SUPABASE_URL =
       'https://kibcxflwjjqcnvyakoue.supabase.co';
@@ -95,28 +217,45 @@
     const SUPABASE_KEY =
       'sb_publishable_jLeDAbiGy7MTEUUD9pa_DA_rnZkArUb';
 
+    const RECOVERY_URL =
+      'https://drammarclinic92-del.github.io/health-center-attendance-v2-/admin.html';
+
     const db = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
-    const form = document.getElementById('loginForm');
-    const button = document.getElementById('loginButton');
-    const message = document.getElementById('message');
-    const dashboard = document.getElementById('dashboard');
-    const emailLabel = document.getElementById('adminEmail');
+    const sections = [
+      'loginSection',
+      'forgotSection',
+      'resetSection',
+      'dashboardSection',
+      'changeSection'
+    ];
 
-    function showMessage(text) {
+    const message = document.getElementById('message');
+
+    function showSection(id) {
+      sections.forEach(sectionId => {
+        document.getElementById(sectionId)
+          .classList.toggle('hidden', sectionId !== id);
+      });
+      message.textContent = '';
+    }
+
+    function showError(prefix, error) {
+      const details = error
+        ? `${error.message || error}\nCode: ${error.code || 'غير محدد'}\nStatus: ${error.status || 'غير محدد'}`
+        : 'لم يُرجع النظام تفاصيل إضافية.';
+      message.textContent = prefix + '\n' + details;
+    }
+
+    function showInfo(text) {
       message.textContent = text;
     }
 
-    function showLogin() {
-      form.classList.remove('hidden');
-      dashboard.classList.add('hidden');
-    }
-
     async function verifyAdmin(user) {
-      showMessage('جارٍ التحقق من صلاحيات المدير...');
+      showInfo('جارٍ التحقق من صلاحية المدير...');
 
       const { data, error } = await db
         .from('admins')
@@ -125,72 +264,250 @@
         .maybeSingle();
 
       if (error) {
-        showLogin();
-        showMessage(
-          'تعذّر التحقق من الصلاحيات. تأكد من سياسات RLS وصلاحيات الجدول.'
+        showSection('loginSection');
+        showError(
+          'تعذر التحقق من صلاحية المدير. قد تكون المشكلة في صلاحيات الجدول أو سياسات RLS.',
+          error
         );
-        return false;
+        return;
       }
 
       if (!data) {
         await db.auth.signOut();
-        showLogin();
-        showMessage('هذا الحساب غير مسجل كمدير.');
-        return false;
+        showSection('loginSection');
+        showInfo('هذا الحساب غير مسجل كمدير.');
+        return;
       }
 
-      form.classList.add('hidden');
-      dashboard.classList.remove('hidden');
-      emailLabel.textContent = user.email || '';
-      showMessage('');
-      return true;
+      showSection('dashboardSection');
+      document.getElementById('signedInEmail').textContent =
+        user.email || '';
     }
 
-    form.addEventListener('submit', async function(event) {
-      event.preventDefault();
-      button.disabled = true;
-      showMessage('جارٍ تسجيل الدخول...');
+    // تسجيل الدخول
+    document.getElementById('loginForm')
+      .addEventListener('submit', async event => {
+        event.preventDefault();
 
-      try {
-        const email =
-          document.getElementById('email').value.trim();
-        const password =
-          document.getElementById('password').value;
+        const button = document.getElementById('loginButton');
+        button.disabled = true;
+        showInfo('جارٍ تسجيل الدخول...');
 
-        const { data, error } = await db.auth.signInWithPassword({
-          email,
-          password
-        });
+        try {
+          const email = document.getElementById('email')
+            .value.trim();
+          const password = document.getElementById('password')
+            .value;
 
-        if (error) {
-          showMessage(
-            'تعذّر تسجيل الدخول. تحقق من البريد وكلمة المرور وتأكيد الحساب.'
-          );
-          return;
+          const { data, error } = await db.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) {
+            showError('فشل تسجيل الدخول من Supabase:', error);
+            return;
+          }
+
+          await verifyAdmin(data.user);
+        } catch (error) {
+          showError('حدث خطأ غير متوقع:', error);
+        } finally {
+          button.disabled = false;
         }
+      });
 
-        await verifyAdmin(data.user);
-      } catch (error) {
-        showMessage('تعذر الاتصال بالخدمة. تحقق من الإنترنت وحاول مجددًا.');
-      } finally {
-        button.disabled = false;
+    // فتح واجهة نسيت كلمة المرور
+    document.getElementById('forgotButton')
+      .addEventListener('click', () => {
+        document.getElementById('recoveryEmail').value =
+          document.getElementById('email').value.trim();
+        showSection('forgotSection');
+      });
+
+    // طلب رابط استعادة يفتح صفحة الإدارة نفسها
+    document.getElementById('forgotForm')
+      .addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const button = document.getElementById('sendRecoveryButton');
+        button.disabled = true;
+        showInfo('جارٍ إرسال رابط الاستعادة...');
+
+        try {
+          const email = document.getElementById('recoveryEmail')
+            .value.trim();
+
+          const { error } = await db.auth.resetPasswordForEmail(email, {
+            redirectTo: RECOVERY_URL
+          });
+
+          if (error) {
+            showError('تعذر إرسال رابط الاستعادة:', error);
+            return;
+          }
+
+          showInfo(
+            'إذا كان البريد مسجلًا، فستصلك رسالة استعادة. افتح أحدث رابط من نفس الجهاز والمتصفح.'
+          );
+        } catch (error) {
+          showError('حدث خطأ أثناء طلب الاستعادة:', error);
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+    // مراقبة رابط الاستعادة والجلسة
+    let recoveryMode = false;
+
+    db.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        recoveryMode = true;
+        showSection('resetSection');
+        showInfo('تم فتح جلسة استعادة كلمة المرور. أدخل كلمة جديدة.');
+        return;
+      }
+
+      if (event === 'SIGNED_OUT') {
+        recoveryMode = false;
       }
     });
 
-    document.getElementById('logoutButton')
-      .addEventListener('click', async function() {
-        const { error } = await db.auth.signOut();
-        showLogin();
-        showMessage(error
-          ? 'تعذر إكمال تسجيل الخروج.'
-          : 'تم تسجيل الخروج.');
+    // تغيير كلمة المرور من رابط الاستعادة
+    document.getElementById('resetForm')
+      .addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const password = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const button = document.getElementById('savePasswordButton');
+
+        if (password !== confirm) {
+          showInfo('كلمتا المرور غير متطابقتين.');
+          return;
+        }
+
+        button.disabled = true;
+        showInfo('جارٍ تحديث كلمة المرور...');
+
+        try {
+          const { data: sessionData, error: sessionError } =
+            await db.auth.getSession();
+
+          if (sessionError) throw sessionError;
+
+          if (!sessionData.session) {
+            throw new Error(
+              'لم يتم العثور على جلسة استعادة صالحة. اطلب رابطًا جديدًا وافتحه مباشرة.'
+            );
+          }
+
+          const { error } = await db.auth.updateUser({ password });
+          if (error) throw error;
+
+          recoveryMode = false;
+          showSection('loginSection');
+          document.getElementById('password').value = '';
+          showInfo('تم تحديث كلمة المرور بنجاح. سجّل الدخول بكلمة المرور الجديدة.');
+          await db.auth.signOut();
+        } catch (error) {
+          showError('تعذر تحديث كلمة المرور:', error);
+        } finally {
+          button.disabled = false;
+        }
       });
 
-    async function restoreSession() {
+    // تغيير كلمة المرور من لوحة المدير
+    document.getElementById('changePasswordButton')
+      .addEventListener('click', () => showSection('changeSection'));
+
+    document.getElementById('changeForm')
+      .addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const current = document.getElementById('currentPassword').value;
+        const next = document.getElementById('changedPassword').value;
+        const confirm = document.getElementById('changedPasswordConfirm').value;
+        const button = document.getElementById('changeSubmitButton');
+
+        if (next !== confirm) {
+          showInfo('كلمتا المرور الجديدة غير متطابقتين.');
+          return;
+        }
+
+        button.disabled = true;
+        showInfo('جارٍ التحقق من كلمة المرور الحالية...');
+
+        try {
+          const { data: sessionResult, error: sessionError } =
+            await db.auth.getSession();
+
+          if (sessionError) throw sessionError;
+          const user = sessionResult.session?.user;
+
+          if (!user?.email) {
+            throw new Error('انتهت جلسة الدخول. سجّل الدخول من جديد.');
+          }
+
+          const { error: loginError } = await db.auth.signInWithPassword({
+            email: user.email,
+            password: current
+          });
+
+          if (loginError) throw loginError;
+
+          const { error } = await db.auth.updateUser({ password: next });
+          if (error) throw error;
+
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('changedPassword').value = '';
+          document.getElementById('changedPasswordConfirm').value = '';
+
+          showSection('dashboardSection');
+          showInfo('تم تغيير كلمة المرور بنجاح.');
+        } catch (error) {
+          showError('تعذر تغيير كلمة المرور:', error);
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+    // العودة من الأقسام الفرعية
+    document.querySelectorAll('.backButton').forEach(button => {
+      button.addEventListener('click', () => showSection('loginSection'));
+    });
+
+    // تسجيل الخروج
+    document.getElementById('logoutButton')
+      .addEventListener('click', async () => {
+        const { error } = await db.auth.signOut();
+        showSection('loginSection');
+
+        if (error) {
+          showError('تعذر تسجيل الخروج:', error);
+        } else {
+          showInfo('تم تسجيل الخروج.');
+        }
+      });
+
+    // عند فتح رابط استعادة على صفحة الإدارة
+    async function initializePage() {
+      const hash = window.location.hash || '';
+      const query = new URLSearchParams(window.location.search);
+      const type = query.get('type');
+
+      if (type === 'recovery' || hash.includes('type=recovery')) {
+        showSection('resetSection');
+        showInfo(
+          'جارٍ التحقق من رابط الاستعادة. إذا لم تظهر جلسة صالحة، اطلب رابطًا جديدًا.'
+        );
+        return;
+      }
+
       const { data, error } = await db.auth.getSession();
 
       if (error) {
-        showMessage('تعذر التحقق من جلسة الدخول.');
+        showError('تعذر استعادة جلسة الدخول:', error);
         return;
       }
 
@@ -199,7 +516,7 @@
       }
     }
 
-    restoreSession();
+    initializePage();
   </script>
 </body>
 </html>
