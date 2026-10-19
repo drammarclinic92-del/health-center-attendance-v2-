@@ -5,351 +5,313 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f766e">
-  <title>اختبار الكاميرا | نظام الحضور</title>
+  <title>تسجيل بصمة الوجه | نظام الحضور</title>
   <link rel="stylesheet" href="styles.css">
-
   <style>
-    .face-page {
-      width: min(600px, calc(100% - 28px));
-      margin: 30px auto 55px;
-    }
-
-    .face-panel {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .face-heading {
-      text-align: center;
-      margin-bottom: 22px;
-    }
-
-    .face-heading h1 {
-      font-size: 25px;
-      margin: 0 0 8px;
-    }
-
-    .face-heading p {
-      color: var(--muted);
-      font-size: 14px;
-      margin: 0;
-    }
-
-    .camera-frame {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      aspect-ratio: 4 / 4.5;
-      border-radius: 18px;
-      background: #102b35;
-      display: grid;
-      place-items: center;
-      color: white;
-    }
-
-    .camera-frame video,
-    .camera-frame canvas {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .camera-frame video {
-      display: none;
-    }
-
-    .camera-placeholder {
-      text-align: center;
-      padding: 25px;
-    }
-
-    .camera-placeholder .camera-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-
-    .camera-placeholder p {
-      color: #d5e7e8;
-      font-size: 13px;
-      line-height: 1.9;
-    }
-
-    .face-actions {
-      display: grid;
-      gap: 11px;
-      margin-top: 18px;
-    }
-
-    .face-actions button {
-      width: 100%;
-      cursor: pointer;
-    }
-
-    .face-actions button:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .face-status {
-      margin-top: 16px;
-      padding: 12px 14px;
-      border-radius: 11px;
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 13px;
-      line-height: 1.8;
-      overflow-wrap: anywhere;
-    }
-
-    .face-status.error {
-      background: #fef2f2;
-      color: #991b1b;
-    }
-
-    .privacy-note {
-      margin-top: 17px;
-      padding: 14px;
-      background: #fffbeb;
-      border: 1px solid #f3dfad;
-      color: #854d0e;
-      border-radius: 12px;
-      font-size: 12px;
-      line-height: 1.9;
-    }
-
-    .consent {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-top: 16px;
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
-    .consent input {
-      margin-top: 6px;
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-
-    .back-link {
-      display: inline-block;
-      margin-bottom: 16px;
-      color: var(--primary);
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    @media (max-width: 520px) {
-      .face-panel {
-        padding: 18px;
-      }
-    }
+    .face-page{width:min(600px,calc(100% - 28px));margin:30px auto 55px}
+    .face-panel{background:#fff;border:1px solid var(--border);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+    .face-heading{text-align:center;margin-bottom:20px}
+    .face-heading h1{font-size:24px;margin:0 0 8px}
+    .face-heading p{color:var(--muted);font-size:14px;line-height:1.8}
+    .camera-frame{position:relative;overflow:hidden;width:100%;aspect-ratio:4/4.5;border-radius:18px;background:#102b35;display:grid;place-items:center;color:white}
+    .camera-frame video{width:100%;height:100%;object-fit:cover;display:none}
+    .camera-placeholder{text-align:center;padding:25px}
+    .camera-placeholder div{font-size:46px;margin-bottom:12px}
+    .field{display:block;margin:16px 0 8px;font-weight:bold;font-size:14px}
+    select{width:100%;padding:13px;border:1px solid var(--border);border-radius:10px;background:white;font:inherit}
+    .face-actions{display:grid;gap:10px;margin-top:16px}
+    .face-actions button{width:100%;cursor:pointer}
+    .face-actions button:disabled{opacity:.5;cursor:not-allowed}
+    .face-status{margin-top:15px;padding:12px;border-radius:11px;background:#f1f5f9;color:#334155;font-size:13px;line-height:1.9;overflow-wrap:anywhere}
+    .face-status.error{background:#fef2f2;color:#991b1b}
+    .privacy-note{margin-top:15px;padding:13px;background:#fffbeb;border:1px solid #f3dfad;color:#854d0e;border-radius:12px;font-size:12px;line-height:1.9}
+    .consent{display:flex;align-items:flex-start;gap:10px;margin-top:15px;font-size:13px;line-height:1.9}
+    .consent input{margin-top:6px;width:18px;height:18px;flex-shrink:0}
+    .back-link{display:inline-block;margin-bottom:16px;color:var(--primary);font-weight:bold}
+    @media(max-width:520px){.face-panel{padding:17px}}
   </style>
 </head>
-
 <body>
-  <header class="site-header">
-    <a class="brand" href="index.html">
-      <span class="brand-icon" aria-hidden="true">✚</span>
-      <span class="brand-text">
-        <strong>نظام الحضور والانصراف</strong>
-        <small>اختبار الكاميرا</small>
-      </span>
-    </a>
-  </header>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-icon" aria-hidden="true">✚</span>
+    <span class="brand-text">
+      <strong>نظام الحضور والانصراف</strong>
+      <small>تسجيل بصمات الموظفين</small>
+    </span>
+  </a>
+</header>
 
-  <main class="face-page">
-    <a class="back-link" href="index.html">→ العودة للرئيسية</a>
+<main class="face-page">
+  <a class="back-link" href="admin.html">→ العودة إلى لوحة الإدارة</a>
+  <section class="face-panel">
+    <div class="face-heading">
+      <h1>تسجيل بصمة الوجه</h1>
+      <p>اختر الموظف، ثم شغّل الكاميرا لتسجيل بصمته بموافقته.</p>
+    </div>
 
-    <section class="face-panel">
-      <div class="face-heading">
-        <h1>التحقق من الوجه</h1>
-        <p>اختبار تشغيل الكاميرا الأمامية على جهازك</p>
+    <label class="field" for="employee">الموظف</label>
+    <select id="employee">
+      <option value="">جارٍ تحميل الموظفين...</option>
+    </select>
+
+    <div class="camera-frame" style="margin-top:16px">
+      <div class="camera-placeholder" id="placeholder">
+        <div>📷</div>
+        <strong>الكاميرا غير مشغّلة</strong>
+        <p>اجعل الوجه واضحاً وفي منتصف الصورة.</p>
       </div>
+      <video id="camera" autoplay playsinline muted></video>
+    </div>
 
-      <div class="camera-frame">
-        <div class="camera-placeholder" id="camera-placeholder">
-          <div class="camera-icon" aria-hidden="true">📷</div>
-          <strong>الكاميرا غير مشغّلة</strong>
-          <p>اضغط على زر تشغيل الكاميرا واسمح للمتصفح باستخدامها.</p>
-        </div>
+    <label class="consent">
+      <input type="checkbox" id="consent">
+      <span>أؤكد أن الموظف وافق على تسجيل بصمة وجهه واستخدامها للتعرّف عليه لأغراض الحضور والانصراف.</span>
+    </label>
 
-        <video id="camera" autoplay playsinline muted></video>
-        <canvas id="snapshot" hidden></canvas>
-      </div>
+    <div class="face-actions">
+      <button class="btn btn-primary" id="start" disabled>تشغيل الكاميرا</button>
+      <button class="btn btn-secondary" id="enroll" disabled>استخراج البصمة وحفظها</button>
+      <button class="btn btn-secondary" id="stop" disabled>إيقاف الكاميرا</button>
+    </div>
 
-      <label class="consent">
-        <input type="checkbox" id="consent">
-        <span>
-          أوافق على تشغيل الكاميرا لاختبارها. أفهم أن هذه الصفحة
-          لا تسجل الحضور ولا ترسل الصورة إلى الخادم.
-        </span>
-      </label>
+    <div class="face-status" id="status" role="status" aria-live="polite">
+      جارٍ تهيئة نموذج الوجه...
+    </div>
 
-      <div class="face-actions">
-        <button class="btn btn-primary" id="start-camera" disabled>
-          تشغيل الكاميرا الأمامية
-        </button>
+    <div class="privacy-note">
+      <strong>الخصوصية:</strong>
+      تُرسل البصمة الرقمية إلى الخادم لحفظها، ولا تُرسل صورة الكاميرا بواسطة هذا الملف. يجب أن يكون تسجيل البصمات بموافقة الموظف، مع إتاحة طريقة بديلة لتسجيل الحضور.
+    </div>
+  </section>
+</main>
 
-        <button class="btn btn-secondary" id="capture" disabled>
-          التقاط صورة تجريبية
-        </button>
+<footer class="site-footer">
+  <p>نظام الحضور والانصراف</p>
+</footer>
 
-        <button class="btn btn-secondary" id="stop-camera" disabled>
-          إيقاف الكاميرا
-        </button>
-      </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script>
+(() => {
+  "use strict";
 
-      <div class="face-status" id="status" role="status" aria-live="polite">
-        وافق على تشغيل الكاميرا للمتابعة.
-      </div>
+  const SUPABASE_URL = "https://kibcxflwjjqcnvyakoue.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_jLeDAbiGy7MTEUUD9pa_DA_rnZkArUb";
 
-      <div class="privacy-note">
-        <strong>تنبيه الخصوصية:</strong>
-        هذه نسخة اختبار فقط. الصورة الملتقطة تبقى داخل الصفحة
-        ولا تُرفع إلى قاعدة البيانات. لم يتم تفعيل مطابقة الوجه
-        أو اختبار الحضور الحي أو تسجيل الحضور.
-      </div>
-    </section>
-  </main>
+  // ملفات نموذج الوجه تُحمّل من مستودع face-api.js.
+  const MODEL_URL =
+    "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights";
 
-  <footer class="site-footer">
-    <p>نظام الحضور والانصراف</p>
-    <p>نسخة اختبار الكاميرا</p>
-  </footer>
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  <script>
-    const video = document.getElementById("camera");
-    const canvas = document.getElementById("snapshot");
-    const placeholder = document.getElementById("camera-placeholder");
-    const consent = document.getElementById("consent");
-    const startButton = document.getElementById("start-camera");
-    const captureButton = document.getElementById("capture");
-    const stopButton = document.getElementById("stop-camera");
-    const statusBox = document.getElementById("status");
+  const video = document.getElementById("camera");
+  const placeholder = document.getElementById("placeholder");
+  const employeeSelect = document.getElementById("employee");
+  const consent = document.getElementById("consent");
+  const startButton = document.getElementById("start");
+  const enrollButton = document.getElementById("enroll");
+  const stopButton = document.getElementById("stop");
+  const statusBox = document.getElementById("status");
 
-    let stream = null;
+  let stream = null;
+  let modelsReady = false;
+  let busy = false;
 
-    function showStatus(message, isError = false) {
-      statusBox.textContent = message;
-      statusBox.className = isError
-        ? "face-status error"
-        : "face-status";
+  function status(message, error = false) {
+    statusBox.textContent = message;
+    statusBox.className = error ? "face-status error" : "face-status";
+  }
+
+  function updateButtons() {
+    startButton.disabled = busy || !consent.checked || !modelsReady || !employeeSelect.value || !!stream;
+    enrollButton.disabled = busy || !consent.checked || !modelsReady || !stream || !employeeSelect.value;
+    stopButton.disabled = !stream || busy;
+  }
+
+  async function loadModels() {
+    try {
+      if (!window.faceapi) throw new Error("تعذر تحميل مكتبة التعرّف على الوجه.");
+
+      status("جارٍ تحميل نموذج الوجه. قد يستغرق ذلك بعض الوقت...");
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+      ]);
+
+      modelsReady = true;
+      status("تم تحميل نموذج الوجه. جارٍ التحقق من جلسة المسؤول...");
+      await loadEmployees();
+    } catch (e) {
+      status("تعذر تحميل نموذج الوجه. تحقق من اتصال الإنترنت ثم أعد فتح الصفحة. التفاصيل: " + e.message, true);
+    }
+    updateButtons();
+  }
+
+  async function loadEmployees() {
+    const { data: userData, error: authError } = await db.auth.getUser();
+    if (authError || !userData.user) {
+      employeeSelect.innerHTML = '<option value="">سجّل دخول المسؤول أولاً</option>';
+      status("لم نجد جلسة مسؤول مسجّلة على هذا الموقع. افتح لوحة الإدارة وسجّل الدخول، ثم افتح هذه الصفحة مجدداً.", true);
+      return;
     }
 
-    consent.addEventListener("change", () => {
-      startButton.disabled = !consent.checked;
-      if (!consent.checked) {
-        showStatus("وافق على تشغيل الكاميرا للمتابعة.");
-      }
-    });
+    const { data: admin, error: adminError } = await db
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", userData.user.id)
+      .maybeSingle();
 
-    startButton.addEventListener("click", async () => {
-      if (!consent.checked) return;
+    if (adminError || !admin) {
+      employeeSelect.innerHTML = '<option value="">غير مخوّل</option>';
+      status("هذا الحساب ليس ضمن حسابات المسؤولين.", true);
+      return;
+    }
 
-      if (!navigator.mediaDevices ||
-          !navigator.mediaDevices.getUserMedia) {
-        showStatus(
-          "المتصفح لا يدعم تشغيل الكاميرا هنا. افتح رابط الموقع عبر HTTPS في Safari أو Chrome.",
-          true
-        );
-        return;
-      }
+    const { data: employees, error } = await db
+      .from("employees")
+      .select("id, employee_number, full_name")
+      .eq("is_active", true)
+      .order("full_name");
 
+    if (error) {
+      employeeSelect.innerHTML = '<option value="">تعذر تحميل الموظفين</option>';
+      status("تعذر تحميل قائمة الموظفين. تحقق من صلاحيات جدول employees وسياسات RLS.", true);
+      return;
+    }
+
+    employeeSelect.innerHTML = '<option value="">اختر الموظف</option>';
+    for (const emp of employees || []) {
+      const option = document.createElement("option");
+      option.value = emp.id;
+      option.textContent = `${emp.full_name} (${emp.employee_number})`;
+      employeeSelect.appendChild(option);
+    }
+
+    status("اختر الموظف، وتأكد من موافقته قبل تشغيل الكاميرا.");
+  }
+
+  consent.addEventListener("change", updateButtons);
+  employeeSelect.addEventListener("change", updateButtons);
+
+  startButton.addEventListener("click", async () => {
+    if (!consent.checked || !employeeSelect.value || !modelsReady) return;
+
+    try {
       startButton.disabled = true;
-      showStatus("جارٍ طلب إذن الكاميرا...");
+      status("جارٍ طلب إذن الكاميرا...");
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          facingMode: "user",
+          width: { ideal: 640 },
+          height: { ideal: 800 }
+        }
+      });
 
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
-          video: {
-            facingMode: "user",
-            width: { ideal: 720 },
-            height: { ideal: 900 }
-          }
-        });
+      video.srcObject = stream;
+      video.style.display = "block";
+      placeholder.hidden = true;
+      await video.play();
+      status("الكاميرا تعمل. اجعل الوجه واضحاً ومنفرداً داخل الإطار.");
+    } catch (e) {
+      stopCamera();
+      status("تعذر تشغيل الكاميرا. تحقق من إذن المتصفح. " + e.message, true);
+    }
+    updateButtons();
+  });
 
-        video.srcObject = stream;
-        video.style.display = "block";
-        placeholder.hidden = true;
-        canvas.hidden = true;
+  enrollButton.addEventListener("click", async () => {
+    if (!consent.checked || !employeeSelect.value || !stream || busy) return;
 
-        await video.play();
+    busy = true;
+    updateButtons();
 
-        captureButton.disabled = false;
-        stopButton.disabled = false;
+    try {
+      status("جارٍ استخراج بصمة الوجه...");
 
-        showStatus(
-          "الكاميرا تعمل بنجاح. هذه معاينة فقط وليست تحققًا من هوية الموظف."
-        );
-      } catch (error) {
-        startButton.disabled = !consent.checked;
+      const result = await faceapi
+        .detectSingleFace(
+          video,
+          new faceapi.TinyFaceDetectorOptions({
+            inputSize: 320,
+            scoreThreshold: 0.5
+          })
+        )
+        .withFaceLandmarks()
+        .withFaceDescriptor();
 
-        const messages = {
-          NotAllowedError: "لم يُسمح للمتصفح باستخدام الكاميرا. تحقق من أذونات الموقع.",
-          NotFoundError: "لم يتم العثور على كاميرا متاحة في الجهاز.",
-          NotReadableError: "الكاميرا مشغولة بتطبيق آخر. أغلق التطبيق الآخر وحاول مجددًا."
-        };
-
-        showStatus(
-          messages[error.name] ||
-          "تعذر تشغيل الكاميرا. تحقق من أذونات المتصفح وحاول مجددًا.",
-          true
-        );
-      }
-    });
-
-    captureButton.addEventListener("click", () => {
-      if (!stream || !video.videoWidth) {
-        showStatus("شغّل الكاميرا أولًا.", true);
+      if (!result) {
+        status("لم نعثر على وجه واضح. حسّن الإضاءة واجعل الوجه أمام الكاميرا ثم حاول مجدداً.", true);
         return;
       }
 
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const embedding = Array.from(result.descriptor);
 
-      const context = canvas.getContext("2d");
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      video.style.display = "none";
-      canvas.hidden = false;
-      canvas.style.display = "block";
-
-      captureButton.disabled = true;
-
-      showStatus(
-        "تم التقاط صورة تجريبية داخل الصفحة فقط. لم يتم حفظها أو إرسالها، ولم يتم التحقق من الوجه."
-      );
-    });
-
-    stopButton.addEventListener("click", stopCamera);
-
-    function stopCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
+      if (embedding.length !== 128 || !embedding.every(Number.isFinite)) {
+        status("لم تُنتج بصمة صالحة. حاول مجدداً.", true);
+        return;
       }
 
-      video.srcObject = null;
-      video.style.display = "none";
-      canvas.hidden = true;
-      canvas.style.display = "none";
-      placeholder.hidden = false;
+      status("تم استخراج البصمة. جارٍ إرسالها إلى الخادم...");
 
-      captureButton.disabled = true;
-      stopButton.disabled = true;
-      startButton.disabled = !consent.checked;
+      const { data: sessionData } = await db.auth.getSession();
+      const token = sessionData.session?.access_token;
 
-      showStatus("تم إيقاف الكاميرا.");
+      if (!token) {
+        status("انتهت جلسة المسؤول. سجّل الدخول مجدداً.", true);
+        return;
+      }
+
+      const response = await fetch(
+        SUPABASE_URL + "/functions/v1/enroll-face",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            employee_id: employeeSelect.value,
+            face_embedding: embedding,
+            model_version: "face-api.js-0.22.2-tiny-128",
+            consent: true
+          })
+        }
+      );
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok || !payload.success) {
+        status(payload.error || "تعذر حفظ البصمة. تحقق من إعدادات الوظيفة ثم حاول مجدداً.", true);
+        return;
+      }
+
+      status("تم حفظ بصمة الوجه بنجاح. يمكنك تسجيل بصمة الموظف التالي.");
+    } catch (e) {
+      status("حدث خطأ: " + e.message, true);
+    } finally {
+      busy = false;
+      updateButtons();
     }
+  });
 
-    window.addEventListener("pagehide", stopCamera);
-  </script>
+  stopButton.addEventListener("click", stopCamera);
+
+  function stopCamera() {
+    if (stream) stream.getTracks().forEach(track => track.stop());
+    stream = null;
+    video.srcObject = null;
+    video.style.display = "none";
+    placeholder.hidden = false;
+    updateButtons();
+  }
+
+  window.addEventListener("pagehide", stopCamera);
+  loadModels();
+})();
+</script>
 </body>
 </html>
