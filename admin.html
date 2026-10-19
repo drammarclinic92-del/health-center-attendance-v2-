@@ -2,362 +2,174 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#16734f">
-  <title>إدارة الحضور | المركز الصحي</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16734f">
+<title>إدارة الحضور | المركز الصحي</title>
 
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background: #f1f7f4;
-      color: #183c30;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 25px auto;
-    }
-
-    .card {
-      background: white;
-      padding: 24px;
-      margin-bottom: 20px;
-      border-radius: 16px;
-      box-shadow: 0 8px 28px #173d3012;
-    }
-
-    h1 { font-size: 25px; margin-top: 0; }
-    h2 { font-size: 20px; }
-    p { line-height: 1.8; color: #61746a; }
-
-    label {
-      display: block;
-      margin: 16px 0 7px;
-      font-weight: bold;
-    }
-
-    input {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #cedbd4;
-      border-radius: 9px;
-      font-size: 16px;
-      background: white;
-    }
-
-    button {
-      padding: 12px 16px;
-      margin-top: 12px;
-      border: 0;
-      border-radius: 9px;
-      background: #16734f;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    button:disabled { opacity: .6; }
-    .secondary { background: #526c60; }
-    .link-button {
-      display: block;
-      background: transparent;
-      color: #16734f;
-      text-decoration: underline;
-      padding-right: 0;
-      padding-left: 0;
-    }
-
-    .hidden { display: none !important; }
-
-    #message {
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      font-size: 14px;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .toolbar input {
-      flex: 1;
-      min-width: 180px;
-    }
-
-    .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 460px;
-    }
-
-    th, td {
-      text-align: right;
-      padding: 13px 10px;
-      border-bottom: 1px solid #e5eee9;
-    }
-
-    th {
-      background: #f1f7f4;
-      color: #24563f;
-    }
-
-    .count {
-      font-weight: bold;
-      color: #16734f;
-    }
-
-    .status {
-      display: inline-block;
-      padding: 5px 9px;
-      border-radius: 20px;
-      background: #e3f5e9;
-      color: #17683f;
-      font-size: 13px;
-    }
-
-    .inactive {
-      background: #fbe9e7;
-      color: #a13226;
-    }
-
-    .notice {
-      background: #f1f7f4;
-      padding: 12px;
-      border-radius: 9px;
-    }
-
-    @media (max-width: 550px) {
-      body { padding: 12px; }
-      .card { padding: 17px; }
-      .container { margin-top: 10px; }
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:14px;font-family:Arial,sans-serif;background:#f1f7f4;color:#183c30}
+.container{max-width:1050px;margin:20px auto}
+.card{background:#fff;padding:22px;margin-bottom:18px;border-radius:16px;box-shadow:0 8px 28px #173d3012}
+h1{font-size:25px;margin-top:0}
+h2{font-size:20px}
+p{line-height:1.8;color:#61746a}
+label{display:block;margin:15px 0 7px;font-weight:bold}
+input{display:block;width:100%;padding:12px;border:1px solid #cedbd4;border-radius:9px;font-size:16px;background:white}
+button{padding:12px 16px;margin-top:12px;border:0;border-radius:9px;background:#16734f;color:white;font-size:15px;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.secondary{background:#526c60}
+.link-button{display:block;background:transparent;color:#16734f;text-decoration:underline;padding-right:0;padding-left:0}
+.hidden{display:none!important}
+.message{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.toolbar input{flex:1;min-width:170px}
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:470px}
+th,td{text-align:right;padding:12px 10px;border-bottom:1px solid #e5eee9}
+th{background:#f1f7f4;color:#24563f}
+.count{font-weight:bold;color:#16734f}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#e3f5e9;color:#17683f;font-size:13px}
+.inactive{background:#fbe9e7;color:#a13226}
+.notice{background:#f1f7f4;padding:12px;border-radius:9px}
+@media(max-width:550px){.card{padding:16px}.container{margin-top:8px}}
+</style>
 </head>
 
 <body>
 <div class="container">
-  <header class="card">
-    <h1>إدارة حضور الموظفين</h1>
-    <p>المركز الصحي — بوابة المدير</p>
-  </header>
 
-  <!-- تسجيل الدخول -->
-  <section id="loginSection" class="card">
-    <h2>تسجيل دخول المدير</h2>
+<header class="card">
+  <h1>إدارة حضور الموظفين</h1>
+  <p>المركز الصحي — بوابة المدير</p>
+</header>
 
-    <form id="loginForm">
-      <label for="email">البريد الإلكتروني</label>
-      <input id="email" type="email"
-        autocomplete="username" required>
+<section id="loginSection" class="card">
+  <h2>تسجيل دخول المدير</h2>
+  <form id="loginForm">
+    <label for="email">البريد الإلكتروني</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="password">كلمة المرور</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button id="loginButton" type="submit">تسجيل الدخول</button>
+  </form>
+  <button id="forgotButton" class="link-button" type="button">نسيت كلمة المرور؟</button>
+</section>
 
-      <label for="password">كلمة المرور</label>
-      <input id="password" type="password"
-        autocomplete="current-password" required>
+<section id="forgotSection" class="card hidden">
+  <h2>استعادة كلمة المرور</h2>
+  <p>أدخل بريد حساب المدير لإرسال رابط الاستعادة.</p>
+  <form id="forgotForm">
+    <label for="recoveryEmail">البريد الإلكتروني</label>
+    <input id="recoveryEmail" type="email" autocomplete="email" required>
+    <button id="sendRecoveryButton" type="submit">إرسال رابط الاستعادة</button>
+  </form>
+  <button class="link-button backButton" type="button">العودة لتسجيل الدخول</button>
+</section>
 
-      <button id="loginButton" type="submit">تسجيل الدخول</button>
-    </form>
+<section id="resetSection" class="card hidden">
+  <h2>تعيين كلمة مرور جديدة</h2>
+  <form id="resetForm">
+    <label for="newPassword">كلمة المرور الجديدة</label>
+    <input id="newPassword" type="password" minlength="8" autocomplete="new-password" required>
+    <label for="confirmPassword">تأكيد كلمة المرور</label>
+    <input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+    <button id="savePasswordButton" type="submit">حفظ كلمة المرور</button>
+  </form>
+</section>
 
-    <button id="forgotButton" class="link-button" type="button">
-      نسيت كلمة المرور؟
-    </button>
-  </section>
-
-  <!-- استعادة كلمة المرور -->
-  <section id="forgotSection" class="card hidden">
-    <h2>استعادة كلمة المرور</h2>
-    <p>أدخل بريد حساب المدير لإرسال رابط الاستعادة.</p>
-
-    <form id="forgotForm">
-      <label for="recoveryEmail">البريد الإلكتروني</label>
-      <input id="recoveryEmail" type="email"
-        autocomplete="email" required>
-
-      <button id="sendRecoveryButton" type="submit">
-        إرسال رابط الاستعادة
-      </button>
-    </form>
-
-    <button class="link-button backButton" type="button">
-      العودة لتسجيل الدخول
-    </button>
-  </section>
-
-  <!-- تعيين كلمة مرور جديدة -->
-  <section id="resetSection" class="card hidden">
-    <h2>تعيين كلمة مرور جديدة</h2>
-
-    <form id="resetForm">
-      <label for="newPassword">كلمة المرور الجديدة</label>
-      <input id="newPassword" type="password"
-        minlength="8" autocomplete="new-password" required>
-
-      <label for="confirmPassword">تأكيد كلمة المرور</label>
-      <input id="confirmPassword" type="password"
-        minlength="8" autocomplete="new-password" required>
-
-      <button id="savePasswordButton" type="submit">
-        حفظ كلمة المرور
-      </button>
-    </form>
-  </section>
-
-  <!-- لوحة الإدارة وقائمة الموظفين -->
-  <section id="dashboardSection" class="hidden">
-    <div class="card">
-      <h2>أهلًا بك في لوحة الإدارة</h2>
-      <p id="signedInEmail"></p>
-
-      <div class="toolbar">
-        <button id="reloadButton" type="button">
-          تحديث قائمة الموظفين
-        </button>
-
-        <button id="changePasswordButton"
-          class="secondary" type="button">
-          تغيير كلمة المرور
-        </button>
-
-        <button id="logoutButton"
-          class="secondary" type="button">
-          تسجيل الخروج
-        </button>
-      </div>
+<section id="dashboardSection" class="hidden">
+  <div class="card">
+    <h2>لوحة الإدارة</h2>
+    <p id="signedInEmail"></p>
+    <div class="toolbar">
+      <button id="reloadButton" type="button">تحديث الموظفين</button>
+      <button id="changePasswordButton" class="secondary" type="button">تغيير كلمة المرور</button>
+      <button id="logoutButton" class="secondary" type="button">تسجيل الخروج</button>
     </div>
+  </div>
 
-    <div class="card">
-      <h2>قائمة الموظفين</h2>
-      <p>تُحمّل الأسماء مباشرة من قاعدة بيانات Supabase.</p>
-
-      <div class="toolbar">
-        <input id="searchInput" type="search"
-          placeholder="ابحث بالاسم أو رقم الموظف..."
-          aria-label="البحث عن موظف">
-
-        <span id="employeeCount" class="count">
-          عدد الموظفين: —
-        </span>
-      </div>
-
-      <p id="employeeMessage" role="status" aria-live="polite">
-        جارٍ تحميل الموظفين...
-      </p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>ت</th>
-              <th>رقم الموظف</th>
-              <th>اسم الموظف</th>
-              <th>الحالة</th>
-            </tr>
-          </thead>
-          <tbody id="employeesBody"></tbody>
-        </table>
-      </div>
+  <div class="card">
+    <h2>قائمة الموظفين</h2>
+    <p>الأسماء تُحمّل مباشرة من قاعدة بيانات Supabase.</p>
+    <div class="toolbar">
+      <input id="searchInput" type="search" placeholder="ابحث بالاسم أو رقم الموظف..." aria-label="البحث عن موظف">
+      <span id="employeeCount" class="count">عدد الموظفين: —</span>
     </div>
-
-    <div class="card">
-      <h2>سجلات الحضور</h2>
-      <p class="notice">
-        لم يتم ربط عرض سجلات الحضور بعد. سنضيفه بعد اختبار
-        قائمة الموظفين وضبط صلاحيات جدول الحضور.
-      </p>
+    <p id="employeeMessage" role="status" aria-live="polite">جارٍ تحميل الموظفين...</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ت</th><th>رقم الموظف</th><th>اسم الموظف</th><th>الحالة</th></tr></thead>
+        <tbody id="employeesBody"></tbody>
+      </table>
     </div>
-  </section>
+  </div>
 
-  <!-- تغيير كلمة المرور من داخل الحساب -->
-  <section id="changeSection" class="card hidden">
-    <h2>تغيير كلمة المرور</h2>
+  <div class="card">
+    <h2>سجل الحضور اليومي</h2>
+    <p>عرض سجلات الدخول والانصراف حسب التاريخ.</p>
+    <label for="attendanceDate">تاريخ السجل</label>
+    <div class="toolbar">
+      <input id="attendanceDate" type="date">
+      <button id="loadAttendanceButton" type="button">عرض السجلات</button>
+    </div>
+    <p id="attendanceMessage" role="status" aria-live="polite">اختر التاريخ لعرض السجلات.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>رقم الموظف</th><th>اسم الموظف</th><th>التاريخ</th><th>وقت الدخول</th><th>وقت الخروج</th></tr></thead>
+        <tbody id="attendanceBody"></tbody>
+      </table>
+    </div>
+  </div>
 
-    <form id="changeForm">
-      <label for="currentPassword">كلمة المرور الحالية</label>
-      <input id="currentPassword" type="password"
-        autocomplete="current-password" required>
+  <div class="card">
+    <h2>تسجيل الحضور</h2>
+    <p class="notice">تسجيل الحضور الفعلي غير مفعّل بعد. سنفعّله بعد تجهيز آلية آمنة تمنع تسجيل حضور موظف آخر أو تعديل السجلات من المتصفح.</p>
+  </div>
+</section>
 
-      <label for="changedPassword">كلمة المرور الجديدة</label>
-      <input id="changedPassword" type="password"
-        minlength="8" autocomplete="new-password" required>
+<section id="changeSection" class="card hidden">
+  <h2>تغيير كلمة المرور</h2>
+  <form id="changeForm">
+    <label for="currentPassword">كلمة المرور الحالية</label>
+    <input id="currentPassword" type="password" autocomplete="current-password" required>
+    <label for="changedPassword">كلمة المرور الجديدة</label>
+    <input id="changedPassword" type="password" minlength="8" autocomplete="new-password" required>
+    <label for="changedPasswordConfirm">تأكيد كلمة المرور الجديدة</label>
+    <input id="changedPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required>
+    <button id="changeSubmitButton" type="submit">تحديث كلمة المرور</button>
+  </form>
+  <button class="link-button backButton" type="button">العودة إلى لوحة الإدارة</button>
+</section>
 
-      <label for="changedPasswordConfirm">
-        تأكيد كلمة المرور الجديدة
-      </label>
-      <input id="changedPasswordConfirm" type="password"
-        minlength="8" autocomplete="new-password" required>
+<div id="message" class="card message hidden" role="status" aria-live="polite"></div>
 
-      <button id="changeSubmitButton" type="submit">
-        تحديث كلمة المرور
-      </button>
-    </form>
-
-    <button class="link-button backButton" type="button">
-      العودة إلى لوحة الإدارة
-    </button>
-  </section>
-
-  <p id="message" class="card hidden"
-    role="status" aria-live="polite"></p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 (() => {
-  const SUPABASE_URL =
-    'https://kibcxflwjjqcnvyakoue.supabase.co';
+  const SUPABASE_URL = 'https://kibcxflwjjqcnvyakoue.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_jLeDAbiGy7MTEUUD9pa_DA_rnZkArUb';
+  const RECOVERY_URL = 'https://drammarclinic92-del.github.io/health-center-attendance-v2-/admin.html';
 
-  const SUPABASE_KEY =
-    'sb_publishable_jLeDAbiGy7MTEUUD9pa_DA_rnZkArUb';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const RECOVERY_URL =
-    'https://drammarclinic92-del.github.io/health-center-attendance-v2-/admin.html';
-
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-
-  const sectionIds = [
-    'loginSection',
-    'forgotSection',
-    'resetSection',
-    'dashboardSection',
-    'changeSection'
-  ];
-
+  const sectionIds = ['loginSection','forgotSection','resetSection','dashboardSection','changeSection'];
   const message = document.getElementById('message');
-  const employeeMessage =
-    document.getElementById('employeeMessage');
-  const employeesBody =
-    document.getElementById('employeesBody');
-  const employeeCount =
-    document.getElementById('employeeCount');
+  const employeeMessage = document.getElementById('employeeMessage');
+  const employeesBody = document.getElementById('employeesBody');
+  const employeeCount = document.getElementById('employeeCount');
+  const attendanceBody = document.getElementById('attendanceBody');
+  const attendanceMessage = document.getElementById('attendanceMessage');
 
   let allEmployees = [];
   let currentUser = null;
   let isAdmin = false;
 
   function showSection(id) {
-    sectionIds.forEach(sectionId => {
-      document.getElementById(sectionId)
-        .classList.toggle('hidden', sectionId !== id);
-    });
-
+    sectionIds.forEach(s => document.getElementById(s).classList.toggle('hidden', s !== id));
     message.classList.add('hidden');
     message.textContent = '';
   }
@@ -369,27 +181,21 @@
   }
 
   function showDetailedError(prefix, error) {
-    const details = error
-      ? `${error.message || error}\nCode: ${error.code || 'غير محدد'}\nStatus: ${error.status || 'غير محدد'}`
-      : 'لا توجد تفاصيل إضافية.';
-    showMessage(prefix + '\n' + details, true);
+    showMessage(prefix + '\n' +
+      (error?.message || String(error || 'لا توجد تفاصيل إضافية')) +
+      '\nCode: ' + (error?.code || 'غير محدد') +
+      '\nStatus: ' + (error?.status || 'غير محدد'), true);
   }
 
   async function verifyAdmin(user) {
-    const { data, error } = await db
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    const { data, error } = await db.from('admins')
+      .select('user_id').eq('user_id', user.id).maybeSingle();
 
     if (error) {
       isAdmin = false;
       showSection('loginSection');
-      showDetailedError(
-        'تعذّر التحقق من صلاحية المدير. تحقق من سياسات RLS وصلاحيات جدول admins.',
-        error
-      );
-      return false;
+      showDetailedError('تعذّر التحقق من صلاحية المدير:', error);
+      return;
     }
 
     if (!data) {
@@ -397,339 +203,290 @@
       await db.auth.signOut();
       showSection('loginSection');
       showMessage('هذا الحساب غير مسجل كمدير.', true);
-      return false;
+      return;
     }
 
     currentUser = user;
     isAdmin = true;
-
     showSection('dashboardSection');
-    document.getElementById('signedInEmail').textContent =
-      'الحساب: ' + (user.email || '');
-
+    document.getElementById('signedInEmail').textContent = 'الحساب: ' + (user.email || '');
     await loadEmployees();
-    return true;
+    await loadAttendance();
   }
 
   async function loadEmployees() {
     if (!isAdmin) return;
-
     employeeMessage.textContent = 'جارٍ تحميل قائمة الموظفين...';
     employeesBody.replaceChildren();
 
-    const { data, error } = await db
-      .from('employees')
+    const { data, error } = await db.from('employees')
       .select('employee_number, full_name, is_active')
       .order('employee_number', { ascending: true });
 
     if (error) {
       allEmployees = [];
       employeeCount.textContent = 'عدد الموظفين: —';
-      employeeMessage.textContent =
-        'تعذّر تحميل الموظفين: ' + error.message;
+      employeeMessage.textContent = 'تعذّر تحميل الموظفين: ' + error.message;
       return;
     }
 
     allEmployees = data || [];
-    employeeCount.textContent =
-      'عدد الموظفين: ' + allEmployees.length;
-
+    employeeCount.textContent = 'عدد الموظفين: ' + allEmployees.length;
     renderEmployees();
   }
 
   function renderEmployees() {
-    const query = document.getElementById('searchInput')
-      .value.trim().toLocaleLowerCase();
-
-    const filtered = allEmployees.filter(employee => {
-      const name = String(employee.full_name || '')
-        .toLocaleLowerCase();
-      const number = String(employee.employee_number || '')
-        .toLocaleLowerCase();
-
-      return name.includes(query) || number.includes(query);
-    });
+    const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase();
+    const filtered = allEmployees.filter(e =>
+      String(e.full_name || '').toLocaleLowerCase().includes(query) ||
+      String(e.employee_number || '').toLocaleLowerCase().includes(query)
+    );
 
     employeesBody.replaceChildren();
 
-    if (filtered.length === 0) {
-      employeeMessage.textContent = allEmployees.length
-        ? 'لا توجد نتائج مطابقة للبحث.'
-        : 'لا توجد بيانات موظفين لعرضها.';
+    if (!filtered.length) {
+      employeeMessage.textContent = allEmployees.length ? 'لا توجد نتائج مطابقة.' : 'لا توجد بيانات موظفين.';
       return;
     }
 
-    employeeMessage.textContent =
-      'تم تحميل ' + allEmployees.length + ' موظفًا.';
+    employeeMessage.textContent = `تم تحميل ${allEmployees.length} موظفًا.`;
 
-    filtered.forEach((employee, index) => {
+    filtered.forEach((e, i) => {
       const row = document.createElement('tr');
-
-      const numberCell = document.createElement('td');
-      numberCell.textContent = String(index + 1);
-
-      const idCell = document.createElement('td');
-      idCell.textContent = employee.employee_number || '—';
-
-      const nameCell = document.createElement('td');
-      nameCell.textContent = employee.full_name || '—';
+      const values = [String(i + 1), e.employee_number || '—', e.full_name || '—'];
+      values.forEach(v => {
+        const cell = document.createElement('td');
+        cell.textContent = v;
+        row.appendChild(cell);
+      });
 
       const statusCell = document.createElement('td');
       const badge = document.createElement('span');
-
-      const active = employee.is_active === true;
+      const active = e.is_active === true;
       badge.className = active ? 'status' : 'status inactive';
       badge.textContent = active ? 'نشط' : 'غير نشط';
-
       statusCell.appendChild(badge);
-      row.append(numberCell, idCell, nameCell, statusCell);
+      row.appendChild(statusCell);
       employeesBody.appendChild(row);
     });
   }
 
-  // تسجيل الدخول
-  document.getElementById('loginForm')
-    .addEventListener('submit', async event => {
-      event.preventDefault();
+  function localDateString() {
+    const now = new Date();
+    return now.getFullYear() + '-' +
+      String(now.getMonth() + 1).padStart(2, '0') + '-' +
+      String(now.getDate()).padStart(2, '0');
+  }
 
-      const button = document.getElementById('loginButton');
-      button.disabled = true;
-      showMessage('جارٍ تسجيل الدخول...');
+  function formatTime(value) {
+    if (!value) return 'لم يُسجّل';
+    return new Date(value).toLocaleTimeString('ar-IQ', {
+      hour: '2-digit', minute: '2-digit', hour12: true
+    });
+  }
 
-      try {
-        const email = document.getElementById('email')
-          .value.trim();
-        const password = document.getElementById('password')
-          .value;
+  async function loadAttendance() {
+    if (!isAdmin) return;
 
-        const { data, error } = await db.auth.signInWithPassword({
-          email,
-          password
-        });
+    const date = document.getElementById('attendanceDate').value;
+    attendanceBody.replaceChildren();
 
-        if (error) {
-          showDetailedError('فشل تسجيل الدخول من Supabase:', error);
-          return;
-        }
+    if (!date) {
+      attendanceMessage.textContent = 'يرجى اختيار التاريخ.';
+      return;
+    }
 
-        await verifyAdmin(data.user);
-      } catch (error) {
-        showDetailedError('حدث خطأ غير متوقع:', error);
-      } finally {
-        button.disabled = false;
+    attendanceMessage.textContent = 'جارٍ تحميل السجلات...';
+    const button = document.getElementById('loadAttendanceButton');
+    button.disabled = true;
+
+    try {
+      const { data, error } = await db.from('attendance')
+        .select('id, work_date, check_in, check_out, employees(employee_number, full_name)')
+        .eq('work_date', date)
+        .order('check_in', { ascending: true });
+
+      if (error) throw error;
+
+      if (!data?.length) {
+        attendanceMessage.textContent = 'لا توجد سجلات حضور لهذا التاريخ.';
+        return;
       }
-    });
 
-  // فتح واجهة الاستعادة
-  document.getElementById('forgotButton')
-    .addEventListener('click', () => {
-      document.getElementById('recoveryEmail').value =
-        document.getElementById('email').value.trim();
-      showSection('forgotSection');
-    });
-
-  // إرسال رابط الاستعادة إلى صفحة الإدارة نفسها
-  document.getElementById('forgotForm')
-    .addEventListener('submit', async event => {
-      event.preventDefault();
-
-      const button =
-        document.getElementById('sendRecoveryButton');
-      button.disabled = true;
-
-      try {
-        const email = document.getElementById('recoveryEmail')
-          .value.trim();
-
-        const { error } = await db.auth.resetPasswordForEmail(email, {
-          redirectTo: RECOVERY_URL
+      data.forEach(record => {
+        const employee = record.employees || {};
+        const row = document.createElement('tr');
+        [
+          employee.employee_number || '—',
+          employee.full_name || '—',
+          record.work_date || '—',
+          formatTime(record.check_in),
+          formatTime(record.check_out)
+        ].forEach(value => {
+          const cell = document.createElement('td');
+          cell.textContent = value;
+          row.appendChild(cell);
         });
+        attendanceBody.appendChild(row);
+      });
 
-        if (error) {
-          showDetailedError('تعذّر إرسال رابط الاستعادة:', error);
-        } else {
-          showMessage(
-            'إذا كان البريد مسجلًا، فستصلك رسالة استعادة. افتح أحدث رابط من نفس المتصفح.'
-          );
-        }
-      } catch (error) {
-        showDetailedError('حدث خطأ أثناء الاستعادة:', error);
-      } finally {
-        button.disabled = false;
-      }
-    });
+      attendanceMessage.textContent = 'عدد السجلات: ' + data.length;
+    } catch (error) {
+      attendanceMessage.textContent = 'تعذّر تحميل السجلات: ' + (error.message || error);
+    } finally {
+      button.disabled = false;
+    }
+  }
 
-  // Supabase يبلغ الصفحة عند فتح رابط الاستعادة
-  db.auth.onAuthStateChange((event) => {
+  document.getElementById('loginForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = document.getElementById('loginButton');
+    button.disabled = true;
+    showMessage('جارٍ تسجيل الدخول...');
+
+    try {
+      const { data, error } = await db.auth.signInWithPassword({
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value
+      });
+      if (error) return showDetailedError('فشل تسجيل الدخول:', error);
+      await verifyAdmin(data.user);
+    } catch (error) {
+      showDetailedError('حدث خطأ غير متوقع:', error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  document.getElementById('forgotButton').addEventListener('click', () => {
+    document.getElementById('recoveryEmail').value = document.getElementById('email').value.trim();
+    showSection('forgotSection');
+  });
+
+  document.getElementById('forgotForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = document.getElementById('sendRecoveryButton');
+    button.disabled = true;
+
+    try {
+      const { error } = await db.auth.resetPasswordForEmail(
+        document.getElementById('recoveryEmail').value.trim(),
+        { redirectTo: RECOVERY_URL }
+      );
+      if (error) showDetailedError('تعذّر إرسال رابط الاستعادة:', error);
+      else showMessage('إذا كان البريد مسجلًا، فستصلك رسالة استعادة. افتح أحدث رابط من نفس المتصفح.');
+    } catch (error) {
+      showDetailedError('حدث خطأ أثناء الاستعادة:', error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  db.auth.onAuthStateChange(event => {
     if (event === 'PASSWORD_RECOVERY') {
       showSection('resetSection');
       showMessage('أدخل كلمة المرور الجديدة وأكدها.');
     }
   });
 
-  // حفظ كلمة المرور الجديدة عبر رابط الاستعادة
-  document.getElementById('resetForm')
-    .addEventListener('submit', async event => {
-      event.preventDefault();
+  document.getElementById('resetForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const password = document.getElementById('newPassword').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    const button = document.getElementById('savePasswordButton');
 
-      const password =
-        document.getElementById('newPassword').value;
-      const confirm =
-        document.getElementById('confirmPassword').value;
-      const button =
-        document.getElementById('savePasswordButton');
+    if (password !== confirm) return showMessage('كلمتا المرور غير متطابقتين.', true);
+    button.disabled = true;
 
-      if (password !== confirm) {
-        showMessage('كلمتا المرور غير متطابقتين.', true);
-        return;
-      }
+    try {
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!sessionData.session) throw new Error('رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.');
 
-      button.disabled = true;
+      const { error } = await db.auth.updateUser({ password });
+      if (error) throw error;
 
-      try {
-        const { data: sessionData, error: sessionError } =
-          await db.auth.getSession();
-
-        if (sessionError) throw sessionError;
-
-        if (!sessionData.session) {
-          throw new Error(
-            'رابط الاستعادة غير صالح أو انتهت صلاحيته. اطلب رابطًا جديدًا.'
-          );
-        }
-
-        const { error } = await db.auth.updateUser({ password });
-        if (error) throw error;
-
-        await db.auth.signOut();
-        showSection('loginSection');
-        document.getElementById('password').value = '';
-        showMessage(
-          'تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.'
-        );
-      } catch (error) {
-        showDetailedError('تعذّر تحديث كلمة المرور:', error);
-      } finally {
-        button.disabled = false;
-      }
-    });
-
-  // تغيير كلمة المرور من لوحة الإدارة
-  document.getElementById('changePasswordButton')
-    .addEventListener('click', () => {
-      showSection('changeSection');
-    });
-
-  document.getElementById('changeForm')
-    .addEventListener('submit', async event => {
-      event.preventDefault();
-
-      const current =
-        document.getElementById('currentPassword').value;
-      const next =
-        document.getElementById('changedPassword').value;
-      const confirm =
-        document.getElementById('changedPasswordConfirm').value;
-      const button =
-        document.getElementById('changeSubmitButton');
-
-      if (next !== confirm) {
-        showMessage('كلمتا المرور الجديدة غير متطابقتين.', true);
-        return;
-      }
-
-      if (!currentUser?.email || !isAdmin) {
-        showMessage('سجّل الدخول أولًا.', true);
-        return;
-      }
-
-      button.disabled = true;
-
-      try {
-        const { error: loginError } =
-          await db.auth.signInWithPassword({
-            email: currentUser.email,
-            password: current
-          });
-
-        if (loginError) throw loginError;
-
-        const { error } = await db.auth.updateUser({
-          password: next
-        });
-
-        if (error) throw error;
-
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('changedPassword').value = '';
-        document.getElementById('changedPasswordConfirm').value = '';
-
-        showSection('dashboardSection');
-        showMessage('تم تغيير كلمة المرور بنجاح.');
-      } catch (error) {
-        showDetailedError('تعذّر تغيير كلمة المرور:', error);
-      } finally {
-        button.disabled = false;
-      }
-    });
-
-  // تحديث قائمة الموظفين والبحث
-  document.getElementById('reloadButton')
-    .addEventListener('click', loadEmployees);
-
-  document.getElementById('searchInput')
-    .addEventListener('input', renderEmployees);
-
-  // العودة إلى تسجيل الدخول أو لوحة الإدارة
-  document.querySelectorAll('.backButton').forEach(button => {
-    button.addEventListener('click', () => {
-      showSection(isAdmin ? 'dashboardSection' : 'loginSection');
-    });
+      await db.auth.signOut();
+      showSection('loginSection');
+      document.getElementById('password').value = '';
+      showMessage('تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.');
+    } catch (error) {
+      showDetailedError('تعذّر تحديث كلمة المرور:', error);
+    } finally {
+      button.disabled = false;
+    }
   });
 
-  // تسجيل الخروج
-  document.getElementById('logoutButton')
-    .addEventListener('click', async () => {
-      const { error } = await db.auth.signOut();
+  document.getElementById('changePasswordButton').addEventListener('click', () => showSection('changeSection'));
 
-      isAdmin = false;
-      currentUser = null;
-      allEmployees = [];
-      employeesBody.replaceChildren();
+  document.getElementById('changeForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const current = document.getElementById('currentPassword').value;
+    const next = document.getElementById('changedPassword').value;
+    const confirm = document.getElementById('changedPasswordConfirm').value;
+    const button = document.getElementById('changeSubmitButton');
 
-      showSection('loginSection');
+    if (next !== confirm) return showMessage('كلمتا المرور الجديدة غير متطابقتين.', true);
+    if (!currentUser?.email || !isAdmin) return showMessage('سجّل الدخول أولًا.', true);
 
-      if (error) {
-        showDetailedError('تعذّر تسجيل الخروج:', error);
-      } else {
-        showMessage('تم تسجيل الخروج.');
-      }
-    });
+    button.disabled = true;
+    try {
+      const { error: loginError } = await db.auth.signInWithPassword({
+        email: currentUser.email, password: current
+      });
+      if (loginError) throw loginError;
 
-  // فتح رابط الاستعادة أو استعادة جلسة المدير
+      const { error } = await db.auth.updateUser({ password: next });
+      if (error) throw error;
+
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('changedPassword').value = '';
+      document.getElementById('changedPasswordConfirm').value = '';
+      showSection('dashboardSection');
+      showMessage('تم تغيير كلمة المرور بنجاح.');
+    } catch (error) {
+      showDetailedError('تعذّر تغيير كلمة المرور:', error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  document.getElementById('reloadButton').addEventListener('click', loadEmployees);
+  document.getElementById('searchInput').addEventListener('input', renderEmployees);
+  document.getElementById('loadAttendanceButton').addEventListener('click', loadAttendance);
+
+  document.querySelectorAll('.backButton').forEach(button => {
+    button.addEventListener('click', () => showSection(isAdmin ? 'dashboardSection' : 'loginSection'));
+  });
+
+  document.getElementById('logoutButton').addEventListener('click', async () => {
+    const { error } = await db.auth.signOut();
+    isAdmin = false;
+    currentUser = null;
+    allEmployees = [];
+    employeesBody.replaceChildren();
+    attendanceBody.replaceChildren();
+    showSection('loginSection');
+    if (error) showDetailedError('تعذّر تسجيل الخروج:', error);
+    else showMessage('تم تسجيل الخروج.');
+  });
+
+  document.getElementById('attendanceDate').value = localDateString();
+
   async function initializePage() {
-    const hash = window.location.hash || '';
-
-    if (hash.includes('type=recovery')) {
+    if (window.location.hash.includes('type=recovery')) {
       showSection('resetSection');
-      showMessage(
-        'جارٍ التحقق من رابط الاستعادة. إذا لم تظهر جلسة صالحة، اطلب رابطًا جديدًا.'
-      );
+      showMessage('جارٍ التحقق من رابط الاستعادة. إذا لم تظهر جلسة صالحة، اطلب رابطًا جديدًا.');
       return;
     }
 
     const { data, error } = await db.auth.getSession();
-
     if (error) {
       showDetailedError('تعذّر استعادة الجلسة:', error);
       return;
     }
-
-    if (data.session) {
-      await verifyAdmin(data.session.user);
-    } else {
-      showSection('loginSection');
-    }
+    if (data.session) await verifyAdmin(data.session.user);
+    else showSection('loginSection');
   }
 
   initializePage();
