@@ -11,8 +11,7 @@
 body{margin:0;min-height:100vh;padding:14px;font-family:Arial,sans-serif;background:#f1f7f4;color:#183c30}
 .container{max-width:1050px;margin:20px auto}
 .card{background:#fff;padding:22px;margin-bottom:18px;border-radius:16px;box-shadow:0 8px 28px #173d3012}
-h1{font-size:25px;margin-top:0}
-h2{font-size:20px}
+h1{font-size:25px;margin-top:0}h2{font-size:20px}
 p{line-height:1.8;color:#61746a}
 label{display:block;margin:15px 0 7px;font-weight:bold}
 input,select{display:block;width:100%;padding:12px;border:1px solid #cedbd4;border-radius:9px;font-size:16px;background:white;color:#183c30}
@@ -24,8 +23,8 @@ button:disabled{opacity:.6;cursor:wait}
 .message{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}
 .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .toolbar input{flex:1;min-width:170px}
-.table-wrap{width:100%;overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:470px}
+.table-wrap{width:100%;overflow-x:auto}
 th,td{text-align:right;padding:12px 10px;border-bottom:1px solid #e5eee9}
 th{background:#f1f7f4;color:#24563f}
 .count{font-weight:bold;color:#16734f}
@@ -37,7 +36,6 @@ th{background:#f1f7f4;color:#24563f}
 </head>
 <body>
 <div class="container">
-
 <header class="card">
   <h1>إدارة حضور الموظفين</h1>
   <p>المركز الصحي — بوابة المدير</p>
@@ -105,14 +103,17 @@ th{background:#f1f7f4;color:#24563f}
   </div>
 
   <div class="card">
-    <h2>تسجيل الحضور</h2>
-    <p class="notice">اختر الموظف وسجّل حضوره من حساب المدير. هذه المرحلة اختبار إداري وليست تعرّفاً على الوجه.</p>
-    <label for="checkInEmployee">اسم الموظف</label>
+    <h2>تسجيل الحضور والانصراف</h2>
+    <p class="notice">اختر الموظف ثم حدّد العملية المطلوبة. التسجيل الحالي يتم من حساب المدير.</p>
+    <label for="checkInEmployee">الموظف</label>
     <select id="checkInEmployee">
-      <option value="">جارٍ تحميل الموظفين...</option>
+      <option value="">اختر الموظف</option>
     </select>
-    <button id="checkInButton" type="button">تسجيل الحضور</button>
-    <p id="checkInMessage" role="status" aria-live="polite">اختر موظفاً للبدء.</p>
+    <div class="toolbar">
+      <button id="checkInButton" type="button">تسجيل الحضور</button>
+      <button id="checkOutButton" class="secondary" type="button">تسجيل الانصراف</button>
+    </div>
+    <p id="checkInMessage" role="status" aria-live="polite">اختر الموظف للبدء.</p>
   </div>
 
   <div class="card">
@@ -160,24 +161,22 @@ th{background:#f1f7f4;color:#24563f}
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const sectionIds = ['loginSection','forgotSection','resetSection','dashboardSection','changeSection'];
 
-  const message = document.getElementById('message');
-  const employeeMessage = document.getElementById('employeeMessage');
-  const employeesBody = document.getElementById('employeesBody');
-  const employeeCount = document.getElementById('employeeCount');
-  const attendanceBody = document.getElementById('attendanceBody');
-  const attendanceMessage = document.getElementById('attendanceMessage');
-  const checkInEmployee = document.getElementById('checkInEmployee');
-  const checkInButton = document.getElementById('checkInButton');
-  const checkInMessage = document.getElementById('checkInMessage');
+  const $ = id => document.getElementById(id);
+  const message = $('message');
+  const employeeMessage = $('employeeMessage');
+  const employeesBody = $('employeesBody');
+  const employeeCount = $('employeeCount');
+  const attendanceBody = $('attendanceBody');
+  const attendanceMessage = $('attendanceMessage');
+  const employeeSelect = $('checkInEmployee');
+  const checkInMessage = $('checkInMessage');
 
   let allEmployees = [];
   let currentUser = null;
   let isAdmin = false;
 
   function showSection(id) {
-    sectionIds.forEach(s =>
-      document.getElementById(s).classList.toggle('hidden', s !== id)
-    );
+    sectionIds.forEach(s => $(s).classList.toggle('hidden', s !== id));
     message.classList.add('hidden');
     message.textContent = '';
   }
@@ -217,9 +216,7 @@ th{background:#f1f7f4;color:#24563f}
     currentUser = user;
     isAdmin = true;
     showSection('dashboardSection');
-    document.getElementById('signedInEmail').textContent =
-      'الحساب: ' + (user.email || '');
-
+    $('signedInEmail').textContent = 'الحساب: ' + (user.email || '');
     await loadEmployees();
     await loadAttendance();
   }
@@ -237,45 +234,39 @@ th{background:#f1f7f4;color:#24563f}
       allEmployees = [];
       employeeCount.textContent = 'عدد الموظفين: —';
       employeeMessage.textContent = 'تعذّر تحميل الموظفين: ' + error.message;
-      fillCheckInOptions();
+      fillEmployeeSelect();
       return;
     }
 
     allEmployees = data || [];
     employeeCount.textContent = 'عدد الموظفين: ' + allEmployees.length;
     renderEmployees();
-    fillCheckInOptions();
+    fillEmployeeSelect();
   }
 
-  function fillCheckInOptions() {
-    const previousValue = checkInEmployee.value;
-    checkInEmployee.replaceChildren();
+  function fillEmployeeSelect() {
+    const previous = employeeSelect.value;
+    employeeSelect.replaceChildren();
 
     const first = document.createElement('option');
     first.value = '';
     first.textContent = 'اختر الموظف';
-    checkInEmployee.appendChild(first);
+    employeeSelect.appendChild(first);
 
     allEmployees.filter(e => e.is_active === true).forEach(e => {
       const option = document.createElement('option');
       option.value = e.employee_number;
       option.textContent = e.employee_number + ' — ' + e.full_name;
-      checkInEmployee.appendChild(option);
+      employeeSelect.appendChild(option);
     });
 
     if (allEmployees.some(e =>
-      e.employee_number === previousValue && e.is_active === true
-    )) {
-      checkInEmployee.value = previousValue;
-    }
-
-    if (!allEmployees.length) {
-      checkInMessage.textContent = 'لم يتم تحميل قائمة الموظفين.';
-    }
+      e.employee_number === previous && e.is_active === true
+    )) employeeSelect.value = previous;
   }
 
   function renderEmployees() {
-    const query = document.getElementById('searchInput').value.trim().toLocaleLowerCase();
+    const query = $('searchInput').value.trim().toLocaleLowerCase();
     const filtered = allEmployees.filter(e =>
       String(e.full_name || '').toLocaleLowerCase().includes(query) ||
       String(e.employee_number || '').toLocaleLowerCase().includes(query)
@@ -285,8 +276,7 @@ th{background:#f1f7f4;color:#24563f}
 
     if (!filtered.length) {
       employeeMessage.textContent = allEmployees.length
-        ? 'لا توجد نتائج مطابقة.'
-        : 'لا توجد بيانات موظفين.';
+        ? 'لا توجد نتائج مطابقة.' : 'لا توجد بيانات موظفين.';
       return;
     }
 
@@ -328,7 +318,7 @@ th{background:#f1f7f4;color:#24563f}
   async function loadAttendance() {
     if (!isAdmin) return;
 
-    const date = document.getElementById('attendanceDate').value;
+    const date = $('attendanceDate').value;
     attendanceBody.replaceChildren();
 
     if (!date) {
@@ -337,7 +327,7 @@ th{background:#f1f7f4;color:#24563f}
     }
 
     attendanceMessage.textContent = 'جارٍ تحميل السجلات...';
-    const button = document.getElementById('loadAttendanceButton');
+    const button = $('loadAttendanceButton');
     button.disabled = true;
 
     try {
@@ -356,7 +346,6 @@ th{background:#f1f7f4;color:#24563f}
       data.forEach(record => {
         const employee = record.employees || {};
         const row = document.createElement('tr');
-
         [
           employee.employee_number || '—',
           employee.full_name || '—',
@@ -368,27 +357,24 @@ th{background:#f1f7f4;color:#24563f}
           cell.textContent = value;
           row.appendChild(cell);
         });
-
         attendanceBody.appendChild(row);
       });
 
       attendanceMessage.textContent = 'عدد السجلات: ' + data.length;
     } catch (error) {
-      attendanceMessage.textContent =
-        'تعذّر تحميل السجلات: ' + (error.message || error);
+      attendanceMessage.textContent = 'تعذّر تحميل السجلات: ' + (error.message || error);
     } finally {
       button.disabled = false;
     }
   }
 
-  async function registerCheckIn() {
+  async function performAttendanceAction(action) {
     if (!isAdmin || !currentUser) {
       checkInMessage.textContent = 'يجب تسجيل دخول المدير أولاً.';
       return;
     }
 
-    const employeeNumber = checkInEmployee.value;
-
+    const employeeNumber = employeeSelect.value;
     if (!employeeNumber) {
       checkInMessage.textContent = 'يرجى اختيار الموظف أولاً.';
       return;
@@ -403,19 +389,23 @@ th{background:#f1f7f4;color:#24563f}
       return;
     }
 
-    const confirmed = window.confirm(
-      'تأكيد تسجيل حضور:\n' + employee.full_name +
-      '\nالرقم الوظيفي: ' + employee.employee_number +
-      '\n\nهل تريد المتابعة؟'
-    );
+    const isCheckIn = action === 'check_in';
+    const actionLabel = isCheckIn ? 'حضور' : 'انصراف';
 
-    if (!confirmed) return;
+    if (!window.confirm(
+      'تأكيد تسجيل ' + actionLabel + ':\n' +
+      employee.full_name + '\nالرقم الوظيفي: ' + employeeNumber
+    )) return;
 
+    const checkInButton = $('checkInButton');
+    const checkOutButton = $('checkOutButton');
     checkInButton.disabled = true;
-    checkInMessage.textContent = 'جارٍ تسجيل الحضور...';
+    checkOutButton.disabled = true;
+    checkInMessage.textContent = 'جارٍ تسجيل ' + actionLabel + '...';
 
     try {
-      const { data, error } = await db.rpc('admin_check_in', {
+      const functionName = isCheckIn ? 'admin_check_in' : 'admin_check_out';
+      const { data, error } = await db.rpc(functionName, {
         p_employee_number: employeeNumber
       });
 
@@ -425,28 +415,30 @@ th{background:#f1f7f4;color:#24563f}
       }
 
       checkInMessage.textContent =
-        '✅ تم تسجيل حضور ' + employee.full_name + ' بنجاح.';
+        'تم تسجيل ' + actionLabel + ' للموظف ' + employee.full_name + ' بنجاح.';
 
-      document.getElementById('attendanceDate').value = localDateString();
+      $('attendanceDate').value = localDateString();
       await loadAttendance();
     } catch (error) {
       checkInMessage.textContent =
-        '❌ تعذّر تسجيل الحضور: ' + (error.message || String(error));
+        'تعذّر تسجيل ' + actionLabel + ': ' +
+        (error.message || String(error));
     } finally {
       checkInButton.disabled = false;
+      checkOutButton.disabled = false;
     }
   }
 
-  document.getElementById('loginForm').addEventListener('submit', async event => {
+  $('loginForm').addEventListener('submit', async event => {
     event.preventDefault();
-    const button = document.getElementById('loginButton');
+    const button = $('loginButton');
     button.disabled = true;
     showMessage('جارٍ تسجيل الدخول...');
 
     try {
       const { data, error } = await db.auth.signInWithPassword({
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value
+        email: $('email').value.trim(),
+        password: $('password').value
       });
       if (error) return showDetailedError('فشل تسجيل الدخول:', error);
       await verifyAdmin(data.user);
@@ -457,20 +449,19 @@ th{background:#f1f7f4;color:#24563f}
     }
   });
 
-  document.getElementById('forgotButton').addEventListener('click', () => {
-    document.getElementById('recoveryEmail').value =
-      document.getElementById('email').value.trim();
+  $('forgotButton').addEventListener('click', () => {
+    $('recoveryEmail').value = $('email').value.trim();
     showSection('forgotSection');
   });
 
-  document.getElementById('forgotForm').addEventListener('submit', async event => {
+  $('forgotForm').addEventListener('submit', async event => {
     event.preventDefault();
-    const button = document.getElementById('sendRecoveryButton');
+    const button = $('sendRecoveryButton');
     button.disabled = true;
 
     try {
       const { error } = await db.auth.resetPasswordForEmail(
-        document.getElementById('recoveryEmail').value.trim(),
+        $('recoveryEmail').value.trim(),
         { redirectTo: RECOVERY_URL }
       );
       if (error) showDetailedError('تعذّر إرسال رابط الاستعادة:', error);
@@ -489,17 +480,15 @@ th{background:#f1f7f4;color:#24563f}
     }
   });
 
-  document.getElementById('resetForm').addEventListener('submit', async event => {
+  $('resetForm').addEventListener('submit', async event => {
     event.preventDefault();
-    const password = document.getElementById('newPassword').value;
-    const confirm = document.getElementById('confirmPassword').value;
-    const button = document.getElementById('savePasswordButton');
+    const password = $('newPassword').value;
+    const confirm = $('confirmPassword').value;
+    const button = $('savePasswordButton');
 
-    if (password !== confirm) {
-      return showMessage('كلمتا المرور غير متطابقتين.', true);
-    }
-
+    if (password !== confirm) return showMessage('كلمتا المرور غير متطابقتين.', true);
     button.disabled = true;
+
     try {
       const { data: sessionData, error: sessionError } = await db.auth.getSession();
       if (sessionError) throw sessionError;
@@ -512,7 +501,7 @@ th{background:#f1f7f4;color:#24563f}
 
       await db.auth.signOut();
       showSection('loginSection');
-      document.getElementById('password').value = '';
+      $('password').value = '';
       showMessage('تم تغيير كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.');
     } catch (error) {
       showDetailedError('تعذّر تحديث كلمة المرور:', error);
@@ -521,38 +510,31 @@ th{background:#f1f7f4;color:#24563f}
     }
   });
 
-  document.getElementById('changePasswordButton').addEventListener('click', () => {
-    showSection('changeSection');
-  });
+  $('changePasswordButton').addEventListener('click', () => showSection('changeSection'));
 
-  document.getElementById('changeForm').addEventListener('submit', async event => {
+  $('changeForm').addEventListener('submit', async event => {
     event.preventDefault();
-    const current = document.getElementById('currentPassword').value;
-    const next = document.getElementById('changedPassword').value;
-    const confirm = document.getElementById('changedPasswordConfirm').value;
-    const button = document.getElementById('changeSubmitButton');
+    const current = $('currentPassword').value;
+    const next = $('changedPassword').value;
+    const confirm = $('changedPasswordConfirm').value;
+    const button = $('changeSubmitButton');
 
-    if (next !== confirm) {
-      return showMessage('كلمتا المرور الجديدة غير متطابقتين.', true);
-    }
-    if (!currentUser?.email || !isAdmin) {
-      return showMessage('سجّل الدخول أولاً.', true);
-    }
+    if (next !== confirm) return showMessage('كلمتا المرور الجديدة غير متطابقتين.', true);
+    if (!currentUser?.email || !isAdmin) return showMessage('سجّل الدخول أولاً.', true);
 
     button.disabled = true;
     try {
       const { error: loginError } = await db.auth.signInWithPassword({
-        email: currentUser.email,
-        password: current
+        email: currentUser.email, password: current
       });
       if (loginError) throw loginError;
 
       const { error } = await db.auth.updateUser({ password: next });
       if (error) throw error;
 
-      document.getElementById('currentPassword').value = '';
-      document.getElementById('changedPassword').value = '';
-      document.getElementById('changedPasswordConfirm').value = '';
+      $('currentPassword').value = '';
+      $('changedPassword').value = '';
+      $('changedPasswordConfirm').value = '';
       showSection('dashboardSection');
       showMessage('تم تغيير كلمة المرور بنجاح.');
     } catch (error) {
@@ -562,10 +544,11 @@ th{background:#f1f7f4;color:#24563f}
     }
   });
 
-  document.getElementById('reloadButton').addEventListener('click', loadEmployees);
-  document.getElementById('searchInput').addEventListener('input', renderEmployees);
-  document.getElementById('loadAttendanceButton').addEventListener('click', loadAttendance);
-  checkInButton.addEventListener('click', registerCheckIn);
+  $('reloadButton').addEventListener('click', loadEmployees);
+  $('searchInput').addEventListener('input', renderEmployees);
+  $('loadAttendanceButton').addEventListener('click', loadAttendance);
+  $('checkInButton').addEventListener('click', () => performAttendanceAction('check_in'));
+  $('checkOutButton').addEventListener('click', () => performAttendanceAction('check_out'));
 
   document.querySelectorAll('.backButton').forEach(button => {
     button.addEventListener('click', () => {
@@ -573,21 +556,20 @@ th{background:#f1f7f4;color:#24563f}
     });
   });
 
-  document.getElementById('logoutButton').addEventListener('click', async () => {
+  $('logoutButton').addEventListener('click', async () => {
     const { error } = await db.auth.signOut();
     isAdmin = false;
     currentUser = null;
     allEmployees = [];
     employeesBody.replaceChildren();
     attendanceBody.replaceChildren();
-    checkInEmployee.replaceChildren();
+    employeeSelect.replaceChildren();
     showSection('loginSection');
-
     if (error) showDetailedError('تعذّر تسجيل الخروج:', error);
     else showMessage('تم تسجيل الخروج.');
   });
 
-  document.getElementById('attendanceDate').value = localDateString();
+  $('attendanceDate').value = localDateString();
 
   async function initializePage() {
     if (window.location.hash.includes('type=recovery')) {
@@ -601,7 +583,6 @@ th{background:#f1f7f4;color:#24563f}
       showDetailedError('تعذّر استعادة الجلسة:', error);
       return;
     }
-
     if (data.session) await verifyAdmin(data.session.user);
     else showSection('loginSection');
   }
